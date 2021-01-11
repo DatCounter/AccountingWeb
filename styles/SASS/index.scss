@@ -1,0 +1,123 @@
+$mainColor: #673AB7;
+$darkMainColor: #512DA8;
+$accentColor: #03A9F4;
+$lightMainColor: #D1C4E9;
+$textColor: #FFFFFF;
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+    letter-spacing: 0.1em;
+    font-family: 'Barlow', sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: $textColor;
+}
+
+body {
+    font-size: 20px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 30px;
+    color: $textColor;
+}
+
+header {
+    background: 
+    linear-gradient(180deg, $darkMainColor 16.15%, $mainColor 100%), 
+    $mainColor;
+    height: 60%;
+    z-index: -999;
+    .options {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+
+        font-size: 22px;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+
+        //Связаться с нами
+        .options__item:last-child{
+            a {
+                margin: 10px 0px;
+                display: block;
+                padding: 3px 25px;
+                border: 3px solid $accentColor;
+                border-radius: 5px;
+            }
+        }
+
+        img {
+            width: 100%;
+        }
+    }
+}
+
+.container {
+    margin: 20px 8%;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: nowrap;
+    //img with ellipse container
+    .content {
+        position: relative;
+        display: inline-block;
+        max-height: 489px; //need to fix it and fix position of nigga
+        z-index: 1;
+    }
+    .ellipse {
+        position: absolute;
+        bottom: 30px;
+        left: -83px;
+        width: 400px;
+        height: 400px;
+        max-width: 400px;
+        max-height: 400px;
+        border-radius: 50%;
+        background: 
+        radial-gradient(81.5% 81.5% at 10.87% 87.37%,
+         #FFFFFF 0%,
+         rgba(209, 196, 233, 0.17) 100%), 
+         #FFFFFF;;
+        
+        mix-blend-mode: normal;
+        filter: blur(4px);
+        z-index: -3;
+    }
+
+    //text information
+
+    .information_intro {
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: column;
+        line-height: 45px;
+        max-width: 70%;
+        margin-left: 50px;
+        h1 {
+            font-size: 46px;
+            margin: 35px 0;
+        }
+
+        p {
+            font-size: 22px;
+            line-height: 46px;
+        }
+
+        a {
+            align-self: flex-start;
+            margin-top: 15%;
+            padding: 0px 10px;
+            border: 3px solid $accentColor;
+            border-radius: 5px;
+        }
+    }
+}
+
