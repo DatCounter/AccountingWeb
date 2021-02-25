@@ -209,7 +209,6 @@ section {
                 display: flex;
                 justify-content: space-around;
                 align-items: baseline;
-                margin: 5px;
                 p {
                     font-weight: bold;
                     line-height: 100%;
@@ -225,7 +224,6 @@ section {
             }
             .section__content {
                 flex: 1;
-                margin-top: 5px;
                 max-height: 420px;
                 display: block;
                 text-align: center;

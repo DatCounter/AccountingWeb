@@ -236,7 +236,6 @@ section {
   -webkit-box-align: baseline;
       -ms-flex-align: baseline;
           align-items: baseline;
-  margin: 5px;
 }
 
 .section__container .wrapper .section__item .section__price p {
@@ -258,7 +257,6 @@ section {
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
-  margin-top: 5px;
   max-height: 420px;
   display: block;
   text-align: center;
