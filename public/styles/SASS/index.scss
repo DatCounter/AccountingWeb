@@ -51,6 +51,10 @@ html * /* override x.xhtml.ru style */
         flex-direction: column;
         flex-shrink: 0;
         border-radius: 25px;
+        p {
+            max-width: 60%;
+            margin-left: 10%;
+        }
 
         .wave-one,
         .wave-two,
@@ -585,15 +589,16 @@ section {
             width: 90%; //need to make with other option
             margin: 10px 5%;
             flex-shrink: 0;
+            max-height: 100px;
+            min-height: 70px;
 
             cursor: pointer;
             color: #000;
             text-align: center;
             border-radius: 10px;
             overflow-y: hidden;
-            transition: all 0.4s;
             p {
-                transition: 0.4s ease-out 0.2s;
+                transition: 0.1s ease-out 0.1s;
                 font-size: 24px;
                 transform-origin: center;
                 transform: translateY(0%);
@@ -607,7 +612,7 @@ section {
                 height: 0;
                 visibility: hidden;
                 opacity: 0;
-                transition: 0.4s ease-out;
+                transition: 0.1s ease-out;
                 text-align: center;
                 word-wrap: normal;
             }
@@ -618,13 +623,13 @@ section {
         overflow-y: auto;
 
         .element-switched {
-            transform: 0.4s ease-out;
+            transition: 0.3s ease-out;
             p {
-                transform: 0.4s ease-out;
                 transform: translateY(-100%);
                 opacity: 0;
                 margin: 0;
                 height: 0;
+                transition: 0.1s ease-out;
             }
 
             .more_info {
@@ -632,7 +637,7 @@ section {
                 height: 100%;
                 visibility: visible;
                 opacity: 1;
-                transition: 0.4s ease-in;
+                transition: 0.1s ease-out;
             }
         }
     }

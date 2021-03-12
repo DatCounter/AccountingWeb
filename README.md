@@ -11,4 +11,5 @@ STEPS TO DEVELOP
 
 # TODO:
 
-1. Add support for mobile devices
+1. Add logic for integrated telegram
+2. Add support for mobile devices

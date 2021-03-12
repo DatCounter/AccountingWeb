@@ -60,6 +60,11 @@ html * {
   border-radius: 25px;
 }
 
+.modal__contact .modal-body p {
+  max-width: 60%;
+  margin-left: 10%;
+}
+
 .modal__contact .modal-body .wave-one,
 .modal__contact .modal-body .wave-two,
 .modal__contact .modal-body .wave-three,
@@ -733,18 +738,18 @@ section {
   margin: 10px 5%;
   -ms-flex-negative: 0;
       flex-shrink: 0;
+  max-height: 100px;
+  min-height: 70px;
   cursor: pointer;
   color: #000;
   text-align: center;
   border-radius: 10px;
   overflow-y: hidden;
-  -webkit-transition: all 0.4s;
-  transition: all 0.4s;
 }
 
 .about_us .container .element p {
-  -webkit-transition: 0.4s ease-out 0.2s;
-  transition: 0.4s ease-out 0.2s;
+  -webkit-transition: 0.1s ease-out 0.1s;
+  transition: 0.1s ease-out 0.1s;
   font-size: 24px;
   -webkit-transform-origin: center;
           transform-origin: center;
@@ -761,8 +766,8 @@ section {
   height: 0;
   visibility: hidden;
   opacity: 0;
-  -webkit-transition: 0.4s ease-out;
-  transition: 0.4s ease-out;
+  -webkit-transition: 0.1s ease-out;
+  transition: 0.1s ease-out;
   text-align: center;
   word-wrap: normal;
 }
@@ -773,18 +778,18 @@ section {
 }
 
 .about_us .container .element-switched {
-  -webkit-transform: 0.4s ease-out;
-          transform: 0.4s ease-out;
+  -webkit-transition: 0.3s ease-out;
+  transition: 0.3s ease-out;
 }
 
 .about_us .container .element-switched p {
-  -webkit-transform: 0.4s ease-out;
-          transform: 0.4s ease-out;
   -webkit-transform: translateY(-100%);
           transform: translateY(-100%);
   opacity: 0;
   margin: 0;
   height: 0;
+  -webkit-transition: 0.1s ease-out;
+  transition: 0.1s ease-out;
 }
 
 .about_us .container .element-switched .more_info {
@@ -792,7 +797,7 @@ section {
   height: 100%;
   visibility: visible;
   opacity: 1;
-  -webkit-transition: 0.4s ease-in;
-  transition: 0.4s ease-in;
+  -webkit-transition: 0.1s ease-out;
+  transition: 0.1s ease-out;
 }
 /*# sourceMappingURL=index.css.map */

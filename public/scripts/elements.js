@@ -16,14 +16,12 @@ $(document).ready(function () {
             },
         }
     });
-
     var elements = $(".element");
 
     for (let i = 0; i < elements.length; i++) {
         elements[i].addEventListener('click', elementSwithcer);
     }
 });
-
 
 
 function modalWindowEnable() {
@@ -51,25 +49,21 @@ function modalWindowEnable() {
 }
 
 function modalWindowRequering() {
+    $("#typePhone").prop("checked", true);
     var items = [];
     items[0] = $(".email input");
     items[1] = $(".phone input");
     var button = $(".submit__button");
 
     button[0].addEventListener('click', function () {
-        if ($.trim(items[0].val()).length === 0 && $.trim(items[1].val()).length === 0) {
-            for (let i = 0; i < items.length; i++) {
-                $(items[i]).attr('required', true);
-            }
-        } else {
-            for (let i = 0; i < items.length; i++) {
-                $(items[i]).removeAttr('required');
-            }
-        }
-
-        if (items[1].val().length > 0 && items[1].val().length != 16)
-        {
+        for (let i = 0; i < items.length; i++) {
+            $(items[i]).removeAttr('required');
             
+        }
+        if ($("#typeEmail").prop("checked")) {
+            $(items[0]).attr('required', true);
+        } else {
+            items[1].attr('required', true);
         }
     });
 }
@@ -102,23 +96,23 @@ function scrollingEnable() {
                 if (delta < 0) {
                     $('html, body').stop().animate({
                         scrollTop: $(items[1]).offset().top
-                    }, 1000);
+                    }, 300);
                 }
             } else if ($(items[1]).offset().top <= offsetWindow && offsetWindow <= items[2].offset().top) {
                 if (delta >= 0) {
                     $('html, body').stop().animate({
                         scrollTop: $(items[0]).offset().top
-                    }, 1000);
+                    }, 400);
                 } else {
                     $('html, body').stop().animate({
                         scrollTop: $(items[2]).offset().top
-                    }, 1000);
+                    }, 300);
                 }
             } else if ($(items[2]).offset().top < offsetWindow) {
                 if (delta >= 0) {
                     $('html, body').stop().animate({
                         scrollTop: $(items[1]).offset().top
-                    }, 500);
+                    }, 400);
                 }
             }
 
