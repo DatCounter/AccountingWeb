@@ -21,13 +21,182 @@ html * /* override x.xhtml.ru style */
     letter-spacing: 0.1em;
     font-family: 'Barlow', sans-serif;
 }
+
+.modal__contact {
+    display: none;
+    opacity: 0;
+    position: fixed;
+    transition: opacity 0.5s cubic-bezier(0.47, 0, 0.745, 0.715);
+    z-index: 100;
+    left: 0%;
+    top: 0%;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+
+    .modal-body {
+        position: relative;
+        color: #000;
+        background: rgba($color: $textColor, $alpha: 0.99);
+        margin: 15% auto;
+        padding: 20px;
+        border: 2px solid $mainColor;
+        box-shadow: 5px 5px 25px rgba($color: #000000, $alpha: 0.6);
+        overflow: hidden;
+        width: 40%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: column;
+        flex-shrink: 0;
+        border-radius: 25px;
+
+        .wave-one,
+        .wave-two,
+        .wave-three,
+        .wave-four,
+        .wave-five,
+        .wave-six {
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            z-index: 0;
+        }
+        .wave-one {
+            left: -36%; /*определяем положение блока*/
+            top: 5%;
+            background-color: $lightMainColor; /*окрашиваем блок*/
+            border-radius: 45%;  /*закругляем углы*/
+            animation: wave 10s linear infinite;  /*добавляем анимацию*/
+        }
+        .wave-two {
+            left: -32%;  /*определяем положение блока*/
+            top: 18%;
+            background-color: $darkMainColor;  /*окрашиваем блок*/
+            border-radius: 45%;  /*закругляем углы*/
+            animation: wave 8s linear infinite; /*добавляем анимацию*/
+        }
+        .wave-three {
+            left: -30%;  /*определяем положение блока*/
+            top: 35%;
+            background-color: $mainColor;  /*окрашиваем блок*/
+            border-radius: 45%;  /*закругляем углы*/
+            animation: wave 6s linear infinite; /*добавляем анимацию*/
+        }
+        .wave-four {
+            right: -36%; /*определяем положение блока*/
+            top: 5%;
+            background-color: $lightMainColor; /*окрашиваем блок*/
+            border-radius: 45%;  /*закругляем углы*/
+            animation: wave 10s linear infinite;  /*добавляем анимацию*/
+        }
+        .wave-five {
+            right: -32%;  /*определяем положение блока*/
+            top: 18%;
+            background-color: $darkMainColor;  /*окрашиваем блок*/
+            border-radius: 45%;  /*закругляем углы*/
+            animation: wave 8s linear infinite; /*добавляем анимацию*/
+        }
+        .wave-six {
+            right: -30%;  /*определяем положение блока*/
+            top: 35%;
+            background-color: $mainColor;  /*окрашиваем блок*/
+            border-radius: 45%;  /*закругляем углы*/
+            animation: wave 6s linear infinite; /*добавляем анимацию*/
+        }
+        @keyframes wave {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .header {
+            margin: 10px 0px 15px 0;
+        }
+
+        .name,
+        .email,
+        .phone {
+            min-width: 60%;
+            p {
+                text-align: center;
+            }
+            input {
+                width: 100%;
+                margin: 10px 0px;
+            }
+
+            z-index: 1;
+        }
+
+        .radiobutton {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            min-width: 60%;
+            z-index: 1;
+
+            p {
+                text-align: center;
+            }
+
+            margin: 20px 0px;
+        }
+
+        button {
+            max-width: calc(440px / 2);
+            position: relative;
+            margin: 20px 0px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: transparent;
+            padding: 5px;
+            cursor: pointer;
+            border: 2px solid $accentColor;
+            box-shadow: 0px 0px 5px $accentColor;
+            transition: box-shadow 0.35s ease-in;
+            z-index: 1;
+
+            &:hover {
+                box-shadow: 5px 5px 5px $accentColor;
+            }
+            span {
+                font-size: 20px;
+                position: relative;                
+                z-index: 1;
+                background: none;
+            }
+        }
+        
+    }
+}
+
 .button__base {
     display: inline-block;
+    background: transparent;
+    transition: all .2s ease-out;
+    cursor: pointer;
     position: relative;
-    background: #111;
+    border: 2px solid $accentColor;
     z-index: 1;
     p {
+        transition: 0.3s;
         position: relative;
+    }
+}
+
+.button__base:hover {
+    background: #03A9F4;
+    p {
+        color: #fff;
+    }
+}
+
+.button__base:active {
+    background: $darkMainColor;
+    p {
+        color: #fff;
     }
 }
 
@@ -36,42 +205,7 @@ a {
     outline: none;
     color: $textColor;
 }
-.button__base:active {
-    //@
-}
 
-.button__base:before {
-    position: absolute;
-    content: '';
-    top: -4px;
-    left: -4px;
-    width: calc(100% + 8px);
-    height: calc(100% + 8px);
-    opacity: 0;
-    background: linear-gradient(45deg, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-    background-size: 400%;
-    z-index: -1;
-    filter: blur(5px);
-    border-radius: 5px;
-    transition: opacity .7s;
-    animation: button-animation 20s linear infinite;
-}
-
-.button__base:hover::before {
-    opacity: 1;
-}
-
-@keyframes button-animation {
-    0% {
-        background-position: 0% 0%;
-      }
-      50% {
-        background-position: 400% 0%;
-      }
-      100% {
-        background-position: 0% 0%;
-      }
-}
 
 body {
     font-size: 20px;
@@ -100,20 +234,30 @@ header {
         text-align: center;
         text-transform: uppercase;
         letter-spacing: 0.1em;
+
+        .options__item {
+            cursor: pointer;
+        }
+
         .options__item:nth-child(2) {
             margin-left: 10%;
         }
 
         //Связаться с нами
         .options__item:last-child {
-            a {
+            p {
+                cursor: text;
+            }
+            .button__base {
                 margin: 10px 0px;
                 display: block;
                 font-size: 20px;
                 padding: 3px 25px;
-                border: 3px solid $accentColor;
                 border-radius: 5px;
                 filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+                p {
+                    cursor: pointer;
+                }
             }
         }
 
@@ -168,23 +312,22 @@ header {
         .header__text {
             align-self: flex-start;
             h1 {
-                font-size: 46px;
+                font-size: 40px;
                 display: inline-block;
             }
         }
 
-        p {
-            word-wrap: break-word;
+        span {
             font-size: 22px;
-            line-height: 46px;
-            max-width: 90%;
+            line-height: 40px;
+            word-spacing: 0.7em;
+            white-space: pre-line;
         }
 
-        a {
+        .button__base {
             align-self: flex-start;
             font-size: 18px;
             padding: 0px 15px;
-            border: 3px solid $accentColor;
             border-radius: 5px;
             filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
         }
@@ -295,11 +438,10 @@ section {
             .section__button {
                 margin: 10px 0px;
                 text-align: center;
-                a {
+                .button__base {
                     color: #000;
                     font-size: 18px;
                     padding: 5px 15px;
-                    border: 3px solid $accentColor;
                     border-radius: 5px;
                     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
                 }
@@ -395,7 +537,6 @@ section {
     background: radial-gradient(87.55% 155.53% at 20.73% 12.45%,
      #7544CB 0.29%, #673AB7 40.39%, #512DA8 90.62%), 
      #673AB7;
-    
 
     .wrapper {
         display: inline-block;
@@ -462,11 +603,12 @@ section {
             }
             .more_info {
                 display: block;
+                font-size: 18px;
                 height: 0;
                 visibility: hidden;
                 opacity: 0;
                 transition: 0.4s ease-out;
-                text-align: left;
+                text-align: center;
                 word-wrap: normal;
             }
         }
