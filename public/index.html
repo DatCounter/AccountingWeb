@@ -10,23 +10,22 @@
     <link rel="stylesheet" href="/styles/SASS/index.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="scripts/Inputmask-5.x/dist/jquery.inputmask.min.js"></script>
-    <script src="scripts/telegram-passport.js"></script>
     <script src="scripts/elements.js"></script>
     <title>Бухгалтерские услуги</title>
 </head>
 
 <body>
     <div class="modal__contact">
-        <form class="modal-body" method="#">
+        <form class="modal-body" method="POST" action="/addOrder">
             <p class="header">Выберите наиболее предпочитаемый вид связи с Вами</p>
             <div class="radiobutton">
                 <div class="radioItem">
                     <span>Почта</span>
-                    <input type="radio" name="type" id="typeEmail" required>
+                    <input type="radio" name="preferred" id="typeEmail" value="email" required>
                 </div>
                 <div class="radioItem">
                     <span>Телефон</span>
-                    <input type="radio" name="type" id="typePhone" required>
+                    <input type="radio" name="preferred" id="typePhone" value="phone" required>
                 </div>
             </div>
             <div class="name">

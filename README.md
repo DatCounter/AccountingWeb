@@ -8,8 +8,7 @@ STEPS TO DEVELOP
 4. Connect JS for site
 5. Deploy
 
-
 # TODO:
 
-1. Add logic for integrated telegram
+1. Add framework to secure personal data
 2. Add support for mobile devices
