@@ -16,8 +16,8 @@ if (telegramBot.start()) {
 }
 
 //change to
-http.createServer(app).listen(8888); //80
-https.createServer(app).listen(44433); //443
+http.createServer(app).listen(80); //80
+https.createServer(app).listen(443); //443
 
 app.post('/addOrder', urlencodedParser, function (req, res) {
   if (Object.keys(req.body).length === 0) return res.sendStatus(400);
