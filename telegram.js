@@ -21,10 +21,10 @@ class Order {
 class User {
   constructor(id, user, password, canAdmin, step) {
     (this.id = id),
-      (this.user = user ?? null),
-      (this.password = password ?? null),
-      (this.canAdmin = canAdmin ?? false),
-      (this.step = step ?? 0);
+      (this.user = user),
+      (this.password = password),
+      (this.canAdmin = canAdmin),
+      (this.step = step);
   }
   id;
   user;
@@ -33,13 +33,10 @@ class User {
   step;
 }
 
-const token = '1645281069:AAEawojtDZUHHO-rzQHvdlpXzVG0SwowUkY';
-const bot = new Telegraf(token);
+const bot = new Telegraf(process.env.TOKEN);
 class TelegramBot {
   //initialization bot
   start() {
-    const user = 'OlgaAdmin';
-    const password = 'XO3o#doA@zyf';
     //start registration
     bot.start(function (ctx) {
       if (!users.find((u) => u.id == ctx.message.from.id)) {
@@ -60,8 +57,8 @@ class TelegramBot {
       )
     );
     bot.command('orders', function (ctx) {
-      let user = users.find((u) => u.id == ctx.message.from.id);
-      if (!user) {
+      let userSelected = users.find((u) => u.id == ctx.message.from.id);
+      if (!userSelected) {
         ctx.reply('Данная команда вам не доступна!');
         return;
       }
@@ -84,10 +81,9 @@ class TelegramBot {
         }
       }
     });
-    //наладить верное удаление
     bot.command('remove', function (ctx) {
-      let user = users.find((u) => u.id == ctx.message.from.id);
-      if (!user) {
+      let userSelected = users.find((u) => u.id == ctx.message.from.id);
+      if (!userSelected) {
         ctx.reply('Данная команда вам не доступна!');
         return;
       }
@@ -117,12 +113,12 @@ class TelegramBot {
         let currentUser = users[userIndex];
         if (
           splitedMsg.length == 2 &&
-          splitedMsg[0] == user &&
-          splitedMsg[1] == password &&
+          splitedMsg[0] == process.env.USER &&
+          splitedMsg[1] == process.env.SECRET_PASSWORD &&
           currentUser.step == 1
         ) {
-          currentUser.user = user;
-          currentUser.password = password;
+          currentUser.user = ctx.message.from.id;
+          currentUser.password = splitedMsg[1];
           currentUser.canAdmin = true;
           currentUser.step++;
           users[userIndex] = currentUser;
@@ -160,9 +156,9 @@ class TelegramBot {
     if (newOrder instanceof Order) {
       orders.push(newOrder);
       for (let i = 0; i < users.length; i++) {
-        const user = users[i];
+        let userSelected = users[i];
         bot.telegram.sendMessage(
-          user.id,
+          userSelected.id,
           'Поступил новый заказ с номером ' +
             newOrder.id +
             '\nЧтобы просмотреть все заказы, напишите /orders'
