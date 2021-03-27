@@ -18,6 +18,7 @@
   "homepage": "https://github.com/DatCounter/AccountingWeb#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "sqlite3": "^5.0.2",
     "telegraf": "^4.1.0"
   },
   "devDependencies": {
