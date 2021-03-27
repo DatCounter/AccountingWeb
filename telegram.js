@@ -1,51 +1,42 @@
 const { Telegraf } = require('telegraf');
 
-var orders = [];
-var users = [];
-
-class Order {
-  constructor(id, name, preferred, email = null, phone = null) {
-    (this.id = id),
-      (this.name = name),
-      (this.email = email),
-      (this.phone = phone),
-      (this.preferred = preferred);
-  }
-  id;
-  name;
-  email;
-  phone;
-  preferred;
-}
-
-class User {
-  constructor(id, user, password, canAdmin, step) {
-    (this.id = id),
-      (this.user = user),
-      (this.password = password),
-      (this.canAdmin = canAdmin),
-      (this.step = step);
-  }
-  id;
-  user;
-  password;
-  canAdmin;
-  step;
-}
-
 const bot = new Telegraf(process.env.TOKEN);
 class TelegramBot {
   //initialization bot
   start() {
     //start registration
     bot.start(function (ctx) {
-      if (!users.find((u) => u.id == ctx.message.from.id)) {
-        users[users.length] = new User(ctx.message.from.id, null, null, false, 1);
-
-        ctx.reply('Здравствуй! Введи логин и пароль для авторизации в системе!');
-      } else {
-        ctx.reply('Ты уже авторизован или не закончил авторизацию!');
-      }
+      var sqlite3 = require('sqlite3').verbose();
+      var db = new sqlite3.Database('AccountingWebDB');
+      var data = {};
+      db.get(
+        'SELECT count(*) as CountOf from users WHERE messageId = $messageId',
+        { $messageId: ctx.message.from.id },
+        function (err, row) {
+          if (err !== null) console.log('Error on bot.start!!\n' + err);
+          data = row.CountOf;
+          if (data === 0) {
+            db.run(
+              'INSERT INTO users VALUES ($messageId, $step, $canAdmin)',
+              {
+                $messageId: ctx.message.from.id,
+                $step: 1,
+                $canAdmin: false,
+              },
+              function (err) {
+                if (err !== null) {
+                  ctx.reply('Произоишла ошибка! Обратитесь к системному администратору');
+                  console.log(err + '\nERROR ON UPDATE user on bot.on method');
+                }
+              }
+            );
+            ctx.reply('Здравствуй! Введи логин и пароль для авторизации в системе!');
+          } else {
+            ctx.reply('Ты уже авторизован или не закончил авторизацию!');
+          }
+        }
+      );
+      db.close();
     });
     //help
     bot.help((ctx) =>
@@ -57,88 +48,163 @@ class TelegramBot {
       )
     );
     bot.command('orders', function (ctx) {
-      let userSelected = users.find((u) => u.id == ctx.message.from.id);
-      if (!userSelected) {
-        ctx.reply('Данная команда вам не доступна!');
-        return;
-      }
-      if (orders.length == 0) {
-        ctx.reply('Доступных заявок нет');
-      } else {
-        for (let i = 0; i < orders.length; i++) {
-          ctx.reply(
-            'Номер заявки: ' +
-              (orders[i].id + 1) +
-              '\n' +
-              orders[i].name +
-              '\nКонтакты:\n' +
-              orders[i].email +
-              '\n' +
-              orders[i].phone +
-              '\nПредпочтительный вид связи: ' +
-              orders[i].preferred
-          );
+      var sqlite3 = require('sqlite3').verbose();
+      var db = new sqlite3.Database('AccountingWebDB');
+      var data = {};
+      db.get(
+        'SELECT canAdmin from users WHERE messageId = $messageId',
+        { $messageId: ctx.message.from.id },
+        function (err, row) {
+          data = row;
+          if (data === undefined || data.canAdmin == false) {
+            ctx.reply('Данная команда вам не доступна!');
+            return;
+          } else if (data.canAdmin == false) return;
+
+          db.all('SELECT * from orders', function (err, rows) {
+            console.log(rows);
+            if (rows.length == 0) {
+              ctx.reply('Доступных заявок нет');
+            } else {
+              let message = '';
+              rows.forEach(function (order) {
+                message +=
+                  '\n\n' +
+                  'Номер заказа: ' +
+                  order.id +
+                  '\nИмя: ' +
+                  order.name +
+                  '\nПочта: ' +
+                  order.email +
+                  '\nТелефон: ' +
+                  order.phone +
+                  '\nПредпочтения: ' +
+                  order.preferred;
+              });
+              ctx.reply(message);
+            }
+          });
         }
-      }
+      );
+      db.close();
     });
     bot.command('remove', function (ctx) {
-      let userSelected = users.find((u) => u.id == ctx.message.from.id);
-      if (!userSelected) {
-        ctx.reply('Данная команда вам не доступна!');
-        return;
-      }
-      var splitedMsg = ctx.message.text.split(' ');
-      if (splitedMsg[0] == '/remove' && splitedMsg.length == 2) {
-        let numberOfOrder = Number(splitedMsg[1]) - 1;
-        let order = orders.find((o) => o.id === numberOfOrder);
+      var sqlite3 = require('sqlite3').verbose();
+      var db = new sqlite3.Database('AccountingWebDB');
 
-        if (order instanceof Order) {
-          let indexToRemove = orders.findIndex((o) => o.id === order.id);
-          orders.splice(indexToRemove, 1);
-          ctx.reply('Удаленa запись: №' + (order.id + 1));
-        } else {
-          ctx.reply('Заявки с номером ' + (numberOfOrder + 1) + ' не существует');
+      db.get(
+        'SELECT messageId, step, canAdmin from users WHERE messageId = $messageId',
+        {
+          $messageId: ctx.message.from.id,
+        },
+        function (err, row) {
+          if (err !== null) {
+            console.log(err.message);
+            ctx.reply('Возникла ошибка! Обратитесь к системному администратору!');
+            return;
+          }
+          if (row.canAdmin == false) {
+            ctx.reply('Данная команда вам не доступна!');
+            return;
+          }
+          var splitedMsg = ctx.message.text.split(' ');
+          if (splitedMsg.length == 2) {
+            let idOrder = splitedMsg[1];
+            db.get(
+              'SELECT count(*) as Length from orders WHERE id = $id',
+              {
+                $id: idOrder,
+              },
+              function (err, row) {
+                if (row.Length === 0) {
+                  ctx.reply(
+                    'Такой записи с номером заявки ' +
+                      idOrder +
+                      ' не существует! Проверьте правильный ввод номера заявки.'
+                  );
+                } else {
+                  db.run(
+                    'DELETE from orders WHERE id = $id',
+                    {
+                      $id: idOrder,
+                    },
+                    function (err) {
+                      if (err !== null) console.log(err.message);
+                      ctx.reply('Удаление заявки произошло успешно!');
+                    }
+                  );
+                }
+              }
+            );
+          }
         }
-      } else {
-        ctx.reply('Вы забыли написать номер заявки');
-      }
+      );
+      db.close();
+    });
+
+    bot.command('logout', function (ctx) {
+      var sqlite3 = require('sqlite3').verbose();
+      var db = new sqlite3.Database('AccountingWebDB');
+      db.run('UPDATE users SET step = 1, canAdmin = false WHERE messageId = $messageId', {
+        $messageId: ctx.message.from.id,
+      });
+      ctx.reply('Успешный выход!');
+      db.close();
     });
 
     //process of authorization
     bot.on('message', function (ctx) {
       var splitedMsg = ctx.message.text.split(' ');
-      let userIndex = users.findIndex((u) => u.id == Number(ctx.message.from.id));
-
-      if (userIndex != -1) {
-        let currentUser = users[userIndex];
-        if (
-          splitedMsg.length == 2 &&
-          splitedMsg[0] == process.env.USER &&
-          splitedMsg[1] == process.env.SECRET_PASSWORD &&
-          currentUser.step == 1
-        ) {
-          currentUser.user = ctx.message.from.id;
-          currentUser.password = splitedMsg[1];
-          currentUser.canAdmin = true;
-          currentUser.step++;
-          users[userIndex] = currentUser;
-          ctx.reply(
-            'Успешный вход! Для просмотра возможностей комманд напишите /help\nНовые заявки будут появлятся в виде новых сообщений'
-          );
-        } else {
-          ctx.reply(
-            'Вход прошёл безуспешно, попробуйте ещё раз! Проверьте, не поставили ли вы лишних пробелов и ввели корректный логин и пароль через 1 пробел.'
-          );
+      var sqlite3 = require('sqlite3').verbose();
+      var db = new sqlite3.Database('AccountingWebDB');
+      var data = {};
+      db.get(
+        'SELECT messageId, step, canAdmin from users WHERE messageId = $messageId',
+        {
+          $messageId: ctx.message.from.id,
+        },
+        function (err, row) {
+          data = row;
+          if (data.canAdmin == false) {
+            if (
+              splitedMsg.length === 2 &&
+              splitedMsg[0] === process.env.LOGIN &&
+              splitedMsg[1] === process.env.SECRET_PASSWORD &&
+              data.step === 1
+            ) {
+              db.run(
+                'UPDATE users SET step = $step, canAdmin = $canAdmin WHERE messageId = $messageId',
+                {
+                  $step: ++data.step,
+                  $canAdmin: true,
+                  $messageId: ctx.message.from.id,
+                },
+                function (err) {
+                  if (err !== null) {
+                    ctx.reply('Произоишла ошибка! Обратитесь к системному администратору');
+                    console.log(err + '\nERROR ON UPDATE user on bot.on method');
+                  }
+                }
+              );
+              ctx.reply(
+                'Успешный вход! Для просмотра возможностей комманд напишите /help\nНовые заявки будут появлятся в виде новых сообщений'
+              );
+            } else {
+              ctx.reply(
+                'Вход прошёл безуспешно, попробуйте ещё раз! Проверьте, не поставили ли вы лишних пробелов и ввели корректный логин и пароль через 1 пробел.'
+              );
+            }
+          } else if (data.step == 2 && data.canAdmin == true) {
+            ctx.reply(
+              'Я такой команды не знаю, попробуйте использовать /help, для получения всех команд'
+            );
+          } else {
+            ctx.reply("Произведите запись в системе написав '/start'");
+          }
         }
-      } else if (userIndex == -1) {
-        ctx.reply("Произведите запись в системе написав '/start'");
-      } else if (currentUser.step == 2 && currentUser.canAdmin == true) {
-        ctx.reply(
-          'Я такой команды не знаю, попробуйте использовать /help, для получения всех команд'
-        );
-      } else {
-        ctx.reply("Произведите запись в системе написав '/start'");
-      }
+      );
+
+      db.close();
     });
     bot.launch();
 
@@ -151,22 +217,36 @@ class TelegramBot {
 
   // outhere adding
   addOrder(order) {
-    order.id = orders.length;
-    var newOrder = new Order(order.id, order.name, order.preferred, order.email, order.phone);
-    if (newOrder instanceof Order) {
-      orders.push(newOrder);
-      for (let i = 0; i < users.length; i++) {
-        let userSelected = users[i];
-        bot.telegram.sendMessage(
-          userSelected.id,
-          'Поступил новый заказ с номером ' +
-            newOrder.id +
-            '\nЧтобы просмотреть все заказы, напишите /orders'
-        );
+    var sqlite3 = require('sqlite3').verbose();
+    var db = new sqlite3.Database('AccountingWebDB');
+    var data = [{ notNullData: 'notNullData' }];
+    db.all('SELECT messageId, canAdmin from users', function (err, rows) {
+      data = rows;
+      rows.forEach(function (row) {
+        if (row.canAdmin == true) {
+          bot.telegram.sendMessage(
+            row.messageId,
+            'Поступил новый заказ!' + '\nЧтобы просмотреть все заказы, напишите /orders'
+          );
+        }
+      });
+    });
+
+    db.run(
+      'INSERT INTO orders VALUES ($id, $name, $phone, $email, $preferred)',
+      {
+        $id: order.id,
+        $name: order.name,
+        $phone: order.phone,
+        $email: order.email,
+        $preferred: order.preferred,
+      },
+      function (err) {
+        if (err !== null) console.error(err.message);
       }
-    } else {
-      console.log(order + 'is not Order');
-    }
+    );
+    db.close();
+    console.log(data);
   }
 }
 
