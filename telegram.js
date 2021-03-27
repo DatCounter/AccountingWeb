@@ -136,6 +136,8 @@ class TelegramBot {
                 }
               }
             );
+          } else {
+            ctx.reply('Вы забыли указать номер заявки!\nНапишите /remove НОМЕР_ЗАЯВКИ');
           }
         }
       );
@@ -219,9 +221,7 @@ class TelegramBot {
   addOrder(order) {
     var sqlite3 = require('sqlite3').verbose();
     var db = new sqlite3.Database('AccountingWebDB');
-    var data = [{ notNullData: 'notNullData' }];
     db.all('SELECT messageId, canAdmin from users', function (err, rows) {
-      data = rows;
       rows.forEach(function (row) {
         if (row.canAdmin == true) {
           bot.telegram.sendMessage(
@@ -246,7 +246,6 @@ class TelegramBot {
       }
     );
     db.close();
-    console.log(data);
   }
 }
 
